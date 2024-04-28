@@ -1,0 +1,162 @@
+openapi: 3.0.3
+info:
+  title: API для работы с авторами
+  description: API для работы с авторами
+  version: 1.0.0
+servers:
+  - url: https://localhost:8080/api/v1
+tags:
+  - name: Author
+    description: API для работы с авторами
+paths:
+  /author:
+    post:
+      summary: Регистрация автора
+      operationId: createAuthor
+      tags:
+        - Author
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createAuthorDto'
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                $ref: 'Components.yaml#/components/schemas/authorDto'
+        '400':
+          description: '400'
+        '403':
+          description: '403'
+        '404':
+          description: '404'
+        '500':
+          description: '500'
+    get:
+      summary: Получение авторов с необязательным критерием 'fullName'
+      operationId: getAuthors
+      tags:
+        - Author
+      parameters:
+        - name: fullName
+          description: "Необязательный поиск по fullName %LIKE%"
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: state
+          description: "Обязательный поиск по состоянию ON_APPROVE, CREATED или REJECTED"
+          in: query
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'Components.yaml#/components/schemas/authorDto'
+        '400':
+          description: '400'
+        '403':
+          description: '403'
+        '404':
+          description: '404'
+        '500':
+          description: '500'
+  /author/{id}:
+    get:
+      summary: Получение автора по id
+      operationId: getAuthorById
+      tags:
+        - Author
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                $ref: 'Components.yaml#/components/schemas/authorDto'
+        '400':
+          description: '400'
+        '403':
+          description: '403'
+        '404':
+          description: '404'
+        '500':
+          description: '500'
+  /author/request/{requestId}:
+    get:
+      summary: Получение автора по id заявки
+      operationId: getAuthorByRequestId
+      tags:
+        - Author
+      parameters:
+        - name: requestId
+          in: path
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: "Id заявки"
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                $ref: 'Components.yaml#/components/schemas/authorDto'
+        '400':
+          description: '400'
+        '403':
+          description: '403'
+        '404':
+          description: '404'
+        '500':
+          description: '500'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT  # optional, for documentation purposes only
+  schemas:
+    createAuthorDto:
+      type: object
+      description: Модель регистрации автора
+      required:
+        - firstName
+        - lastName
+        - institution
+        - positionAndTitles
+      properties:
+        firstName:
+          type: string
+          description: "Имя"
+        lastName:
+          type: string
+          description: "Фамилия"
+        patronymic:
+          type: string
+          description: "Отчество"
+        institution:
+          type: string
+          description: "Научная организация к которой привязан автор"
+        positionAndTitles:
+          type: string
+          description: "Должность и звания"

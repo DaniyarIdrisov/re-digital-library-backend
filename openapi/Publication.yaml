@@ -1,0 +1,295 @@
+openapi: 3.0.3
+info:
+  title: API для работы с публикациями
+  description: API для работы с публикациями
+  version: 1.0.0
+servers:
+  - url: https://localhost:8080/api/v1
+tags:
+  - name: Publication
+    description: API для работы с публикациями
+paths:
+  /publication:
+    post:
+      summary: Создание публикации
+      operationId: createPublication
+      tags:
+        - Publication
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createPublicationDto'
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                $ref: 'Components.yaml#/components/schemas/publicationDto'
+        '400':
+          description: '400'
+        '403':
+          description: '403'
+        '404':
+          description: '404'
+        '500':
+          description: '500'
+  /publication/{id}/generateKeywords:
+    get:
+      summary: Генерация ключевых слов на основе темы и аннотации публикации
+      operationId: generateKeywords
+      tags:
+        - Publication
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          description: "Id публикации"
+          in: path
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'Components.yaml#/components/schemas/keywordDto'
+        '400':
+          description: '400'
+        '403':
+          description: '403'
+        '404':
+          description: '404'
+        '500':
+          description: '500'
+  /publication/{id}/setKeywords:
+    post:
+      summary: Привязка ключевых слов к публикации
+      operationId: setKeywords
+      tags:
+        - Publication
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          description: "Id публикации"
+          in: path
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: "Ключевые слова для привязка к публикации"
+              items:
+                $ref: '#/components/schemas/setKeywordDto'
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                $ref: 'Components.yaml#/components/schemas/publicationDto'
+        '400':
+          description: '400'
+        '403':
+          description: '403'
+        '404':
+          description: '404'
+        '500':
+          description: '500'
+  /publication/{id}:
+    get:
+      summary: Получение публикации по id
+      operationId: getPublicationById
+      tags:
+        - Publication
+      parameters:
+        - name: id
+          description: "Id публикации"
+          in: path
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                $ref: 'Components.yaml#/components/schemas/publicationDto'
+        '400':
+          description: '400'
+        '403':
+          description: '403'
+        '404':
+          description: '404'
+        '500':
+          description: '500'
+  /publication/request/{requestId}:
+    get:
+      summary: Получение публикации по id заявки
+      operationId: getPublicationByRequestId
+      tags:
+        - Publication
+      parameters:
+        - name: requestId
+          description: "Id заявки"
+          in: path
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                $ref: 'Components.yaml#/components/schemas/publicationDto'
+        '400':
+          description: '400'
+        '403':
+          description: '403'
+        '404':
+          description: '404'
+        '500':
+          description: '500'
+  /publication/author/{authorId}:
+    get:
+      summary: Получение публикаций по id автора
+      operationId: getPublicationsByAuthorId
+      tags:
+        - Publication
+      parameters:
+        - name: authorId
+          description: "Id автора"
+          in: path
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'Components.yaml#/components/schemas/publicationDto'
+        '400':
+          description: '400'
+        '403':
+          description: '403'
+        '404':
+          description: '404'
+        '500':
+          description: '500'
+  /publication/list:
+    post:
+      summary: Получение публикаций по критериям
+      operationId: getPublications
+      tags:
+        - Publication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/getPublicationsDto'
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'Components.yaml#/components/schemas/publicationDto'
+        '400':
+          description: '400'
+        '403':
+          description: '403'
+        '404':
+          description: '404'
+        '500':
+          description: '500'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT  # optional, for documentation purposes only
+  schemas:
+    createPublicationDto:
+      type: object
+      description: Модель создание публикации
+      required:
+        - topic
+        - resume
+        - literaryReferences
+        - filename
+        - organization
+      properties:
+        topic:
+          type: string
+          description: "Тема публикации"
+        resume:
+          type: string
+          description: "Аннотация (резюме)"
+        literaryReferences:
+          type: string
+          description: "Литературные ссылки"
+        filename:
+          type: string
+          description: "Имя файла публикации"
+        organization:
+          type: string
+          description: "Организация где публиковалась"
+        authorIds:
+          type: array
+          description: "Id авторов в порядке их добавления"
+          items:
+            type: string
+            format: uuid
+    setKeywordDto:
+      type: object
+      description: Модель привязки ключевого слова к публикации
+      properties:
+        keywordId:
+          type: string
+          format: uuid
+          description: "Id ключевого слова"
+        keywordName:
+          type: string
+          description: "Само ключевое слово, вводится, если оно введено пользователем, а не сгенерировано"
+    getPublicationsDto:
+      type: object
+      description: Модель поиска публикация с критериями
+      properties:
+        state:
+          type: string
+          description: "Обязательный поиск по состоянию ON_APPROVE, CREATED или REJECTED"
+        topic:
+          type: string
+          description: "Необзяательный поиск по названию статьи %LIKE%"
+        keywords:
+          type: array
+          description: "Необязательный поиск по ключевым словам %LIKE%"
+          items:
+            type: string
+
+
+

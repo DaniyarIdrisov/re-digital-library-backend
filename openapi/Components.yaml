@@ -1,0 +1,177 @@
+info:
+  title: Общие модели
+  description: Общие модели
+  version: 1.0.0
+components:
+  schemas:
+    accountDto:
+      type: object
+      description: Модель аккаунта
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "Идентификатор"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Дата создания"
+        updatedAt:
+          type: string
+          format: date-time
+          description: "Дата изменения"
+        email:
+          type: string
+          format: email
+          description: "Email"
+        fullName:
+          type: string
+          description: "Полное имя пользователя"
+        roles:
+          type: array
+          items:
+            type: string
+          description: "Привязанные роли"
+    requestDto:
+      type: object
+      description: Модель заявки
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "Идентификатор"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Дата создания"
+        updatedAt:
+          type: string
+          format: date-time
+          description: "Дата изменения"
+        comment:
+          type: string
+          description: "Комментарий оставленный админом"
+        state:
+          type: string
+          description: "Статус заявки: IN_PROCESSING, APPROVED или REJECTED"
+        type:
+          type: string
+          description: "Тип заявки: AUTHOR или PUBLICATION"
+        createdBy:
+          $ref: "#/components/schemas/accountDto"
+    authorDto:
+      type: object
+      description: Модель автора
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "Идентификатор"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Дата создания"
+        updatedAt:
+          type: string
+          format: date-time
+          description: "Дата изменения"
+        firstName:
+          type: string
+          description: "Имя автора"
+        lastName:
+          type: string
+          description: "Фамилия автора"
+        patronymic:
+          type: string
+          description: "Отчество автора"
+        institution:
+          type: string
+          description: "Научная организация к которой привязан автор"
+        positionAndTitles:
+          type: string
+          description: "Должность и звания"
+        fullName:
+          type: string
+          description: "Полное имя автора"
+        state:
+          type: string
+          description: "Состояние автора: ON_APPROVE, CREATED или REJECTED"
+        request:
+          $ref: "#/components/schemas/requestDto"
+    publicationDto:
+      type: object
+      description: Модель публикации
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "Идентификатор"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Дата создания"
+        updatedAt:
+          type: string
+          format: date-time
+          description: "Дата изменения"
+        topic:
+          type: string
+          description: "Тема публикации"
+        orderAuthors:
+          type: string
+          description: "Очередность авторов с их должносятми и званиями"
+        resume:
+          type: string
+          description: "Аннотация (резюме)"
+        literaryReferences:
+          type: string
+          description: "Литературные ссылки"
+        code:
+          type: string
+          description: "УДК (уникальнай код публикации)"
+        filename:
+          type: string
+          description: "Имя файла публикации"
+        organization:
+          type: string
+          description: "Организация где публиковалась"
+        state:
+          type: string
+          description: "Состояние публикации: ON_APPROVE, CREATED или REJECTED"
+        keywords:
+          type: array
+          description: "Ключевые слова публикации"
+          items:
+            $ref: "#/components/schemas/keywordDto"
+        authors:
+          type: array
+          description: "Авторы публикации"
+          items:
+            $ref: "#/components/schemas/authorDto"
+        request:
+          $ref: "#/components/schemas/requestDto"
+    keywordDto:
+      type: object
+      description: Модель ключевого слова
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "Идентификатор"
+        createdAt:
+          type: string
+          format: date-time
+          description: "Дата создания"
+        updatedAt:
+          type: string
+          format: date-time
+          description: "Дата изменения"
+        keyword:
+          type: string
+          description: "Ключевое слово"
+
+
+
+
+
+  
